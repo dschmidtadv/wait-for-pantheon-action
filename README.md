@@ -1,12 +1,12 @@
 # Wait for Pantheon — A GitHub Action ⏱
 
-Do you have other Github actions (Lighthouse, Cypress, etc) that depend on the Pantheon Preview URL? This action will wait until the url is available before running the next task.
+Do you have other Github actions (Lighthouse, Cypress, etc) that depend on the Pantheon Multidev Environment being available? This action will wait until the url is available before running the next task. Most of it was "borrowed" from JakePartusch/wait-for-netlify-action.
 
 ## Inputs
 
 ### `site_name`
 
-**Required** The name of the Pantheon site to reach `https://{site_name}.Pantheon.app`
+**Required** The name of the Pantheon site to reach `https://$GITHUB_REF_NAME-{site_name}.pantheonsite.io/`
 
 ### `request_headers`
 
@@ -14,7 +14,7 @@ Optional — Stringified HTTP Header object key/value pairs to send in requests 
 
 ### `max_timeout`
 
-Optional — The amount of time to spend waiting on Pantheon. Defaults to `60` seconds
+Optional — The amount of time to spend waiting on Pantheon. Defaults to `500` seconds
 
 ### `base_path`
 
@@ -31,51 +31,57 @@ The Pantheon deploy preview url that was deployed.
 Basic Usage
 
 ```yaml
-steps:
-  - name: Waiting for 200 from the Pantheon Preview
-    uses: jakepartusch/wait-for-pantheon-action@v1.3
-    id: waitFor200
-    with:
-      site_name: "jakepartusch"
-      max_timeout: 60
-```
-
-<details>
-<summary>Complete example with Lighthouse</summary>
-<br />
-
-```yaml
-name: Lighthouse
-
-on: [pull_request]
-
+name: Deploy to Pantheon w Multisite
+on:
+  push:
+    branches-ignore:
+      - 'master'
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - name: Install
-        run: |
-          npm ci
-      - name: Build
-        run: |
-          npm run build
-      - name: Waiting for 200 from the Pantheon Preview
-        uses: jakepartusch/wait-for-pantheon-action@v1.3
-        id: waitFor200
-        with:
-          site_name: "jakepartusch"
-      - name: Lighthouse CI
-        run: |
-          npm install -g @lhci/cli@0.3.x
-          lhci autorun --upload.target=temporary-public-storage --collect.url=${{ steps.waitFor200.outputs.url }} || echo "LHCI failed!"
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+    - uses: actions/checkout@v1
+    - uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.PANTHEON_SSH_KEY }}
+        config: ${{ secrets.SSH_CONFIG }}
+        known_hosts: ${{ secrets.KNOWN_HOSTS }} 
+    - name: Setup Terminus
+      uses: kopepasah/setup-pantheon-terminus@2
+
+    - name: Login to Pantheon
+      run: terminus auth:login -q --machine-token=${{ secrets.PANTHEON_MACHINE_TOKEN }}
+    - name: Create Pantheon MultiDev        
+      run: terminus multidev:create   --quiet --no-files -- ${{ secrets.pantheon_site_name }}.dev $GITHUB_REF_NAME
+        
+    - name: Waiting for 200 from the Pantheon Preview
+      uses: dschmidtadv/wait-for-pantheon-action@1.4
+      id: waitFor200
+      with:
+          branch_name: ${{ github.ref_name }}
+          site_name: ${{ secrets.pantheon_site_name }}
+
+    - name: deployer
+      env:
+        pantheon_repo: '${{ secrets.PANTHEON_REPO }}'
+        pantheon_site_name: '${{ secrets.PANTHEON_SITE_NAME }}'
+      run: |
+        git remote add pantheon $pantheon_repo
+        git remote -v
+        git push -f pantheon HEAD:$GITHUB_REF -vvv
+
+    - name: Import Config
+      run: terminus remote:drush ${{ secrets.pantheon_site_name }}.$GITHUB_REF_NAME cim -y
+
+         
+    - name: Clear Pantheon Cache        
+      if: ${{ always() }}
+      run: terminus env:clear-cache ${{ secrets.pantheon_site_name }}.$GITHUB_REF_NAME
+
+
+
+```yaml
+
 ```
 
 </details>
