@@ -18,7 +18,7 @@ Optional — The amount of time to spend waiting on Pantheon. Defaults to `500` 
 
 ### `base_path`
 
-Optional — The page that needs to be tested for 200. Defaults to "/" (eg: `https://{site_name}.Pantheon.app{base_path}`)
+Optional — The page that needs to be tested for 200. Defaults to "/" (eg: `https://$GITHUB_REF_NAME-{site_name}.pantheonsite.io/{base_path}`)
 
 ## Outputs
 
