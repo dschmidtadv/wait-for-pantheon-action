@@ -18,7 +18,8 @@ const waitForUrl = async (url, MAX_TIMEOUT, { headers }) => {
 
 const run = async () => {
   try {
-    const BRANCH_NAME =  github.ref_name;
+//    const BRANCH_NAME =  github.ref_name;
+  const BRANCH_NAME =  core.getInput("branch_name");
 
 
     //const BRANCH_NAME = "buildtools";
