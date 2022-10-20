@@ -21,7 +21,7 @@ const run = async () => {
 //    const BRANCH_NAME =  github.ref_name;
   const BRANCH_NAME =  core.getInput("branch_name");
 
-    const MAX_TIMEOUT = Number(core.getInput("max_timeout")) || 60;
+    const MAX_TIMEOUT = Number(core.getInput("max_timeout")) || 500;
 
     const siteName = core.getInput("site_name");
     const basePath = core.getInput("base_path");
