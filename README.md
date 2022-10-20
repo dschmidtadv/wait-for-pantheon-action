@@ -1,12 +1,12 @@
-# Wait for Netlify — A GitHub Action ⏱
+# Wait for Pantheon — A GitHub Action ⏱
 
-Do you have other Github actions (Lighthouse, Cypress, etc) that depend on the Netlify Preview URL? This action will wait until the url is available before running the next task.
+Do you have other Github actions (Lighthouse, Cypress, etc) that depend on the Pantheon Preview URL? This action will wait until the url is available before running the next task.
 
 ## Inputs
 
 ### `site_name`
 
-**Required** The name of the Netlify site to reach `https://{site_name}.netlify.app`
+**Required** The name of the Pantheon site to reach `https://{site_name}.Pantheon.app`
 
 ### `request_headers`
 
@@ -14,17 +14,17 @@ Optional — Stringified HTTP Header object key/value pairs to send in requests 
 
 ### `max_timeout`
 
-Optional — The amount of time to spend waiting on Netlify. Defaults to `60` seconds
+Optional — The amount of time to spend waiting on Pantheon. Defaults to `60` seconds
 
 ### `base_path`
 
-Optional — The page that needs to be tested for 200. Defaults to "/" (eg: `https://{site_name}.netlify.app{base_path}`)
+Optional — The page that needs to be tested for 200. Defaults to "/" (eg: `https://{site_name}.Pantheon.app{base_path}`)
 
 ## Outputs
 
 ### `url`
 
-The netlify deploy preview url that was deployed.
+The Pantheon deploy preview url that was deployed.
 
 ## Example usage
 
@@ -32,8 +32,8 @@ Basic Usage
 
 ```yaml
 steps:
-  - name: Waiting for 200 from the Netlify Preview
-    uses: jakepartusch/wait-for-netlify-action@v1.3
+  - name: Waiting for 200 from the Pantheon Preview
+    uses: jakepartusch/wait-for-pantheon-action@v1.3
     id: waitFor200
     with:
       site_name: "jakepartusch"
@@ -65,8 +65,8 @@ jobs:
       - name: Build
         run: |
           npm run build
-      - name: Waiting for 200 from the Netlify Preview
-        uses: jakepartusch/wait-for-netlify-action@v1.3
+      - name: Waiting for 200 from the Pantheon Preview
+        uses: jakepartusch/wait-for-pantheon-action@v1.3
         id: waitFor200
         with:
           site_name: "jakepartusch"

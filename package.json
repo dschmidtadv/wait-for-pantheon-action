@@ -1,5 +1,5 @@
 {
-  "name": "wait-for-netlify-action",
+  "name": "wait-for-pantheon-action",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

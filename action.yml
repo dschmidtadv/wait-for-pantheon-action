@@ -1,11 +1,11 @@
-name: "Wait for Netlify"
-description: "Wait for Netlify Deploy Preview to complete"
+name: "Wait for Pantheon"
+description: "Wait for Pantheon Deploy Preview to complete"
 branding:
   icon: "clock"
   color: "blue"
 inputs:
   site_name:
-    description: "The Netlify site name to test against"
+    description: "The Pantheon site name to test against"
     required: true
   request_headers:
     description: "Stringified HTTP Header object key/value pairs to send in requests"
