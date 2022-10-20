@@ -1,6 +1,6 @@
 # Wait for Pantheon — A GitHub Action ⏱
 
-Do you have other Github actions (Lighthouse, Cypress, etc) that depend on the Pantheon Multidev Environment being available? This action will wait until the url is available before running the next task. Most of it was "borrowed" from JakePartusch/wait-for-netlify-action.
+Do you have other Github actions (Lighthouse, Cypress, etc) that depend on the Pantheon Multidev Environment being available? This action will wait until the Pantheon Multi Dev is available before running the next task. Most of it was "borrowed" from JakePartusch/wait-for-netlify-action.
 
 ## Inputs
 
